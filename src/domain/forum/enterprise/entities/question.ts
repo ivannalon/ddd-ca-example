@@ -56,7 +56,7 @@ export class Question extends Entity<QuestionProps> {
   }
 
   set bestAnswerId(bestAnswerId: UniqueEntityId | undefined) {
-    this.bestAnswerId = bestAnswerId
+    this.props.bestAnswerId = bestAnswerId
   }
 
   set title(title: string) {
