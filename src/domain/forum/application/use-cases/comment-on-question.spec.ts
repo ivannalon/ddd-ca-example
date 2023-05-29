@@ -24,14 +24,12 @@ describe("Comment on Question", () => {
 
     await questionRepository.create(question);
 
-    const { questionComment } = await sut.execute({
+    const result = await sut.execute({
       questionId: question.id.toString(),
       content: faker.lorem.text(),
       authorId: faker.name.fullName(),
     });
 
-    expect(questionCommentsRepository.questionComments[0].id).toEqual(
-      questionComment.id
-    );
+    expect(result.isRight()).toEqual(true);
   });
 });

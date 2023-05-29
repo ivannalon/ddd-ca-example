@@ -3,6 +3,7 @@ import { EditQuestionUseCase } from "./edit-question";
 import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
 import { makeQuestion } from "test/factories/make-question";
 import { Question } from "../../enterprise/entities/question";
+import { NotAllowedError } from "./errors/not-allowed-error";
 
 let questionsRepository: InMemoryQuestionsRepository;
 let sut: EditQuestionUseCase;
@@ -36,13 +37,13 @@ describe("Edit Question", () => {
   });
 
   it("should not be able to edit a question from another user", async () => {
-    await expect(() =>
-      sut.execute({
-        authorId: "example-02",
-        questionId: "question-01",
-        title: "New title",
-        content: "New content",
-      })
-    ).rejects.toBeInstanceOf(Error);
+    const result = await sut.execute({
+      authorId: "example-02",
+      questionId: "question-01",
+      title: "New title",
+      content: "New content",
+    });
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllowedError);
   });
 });

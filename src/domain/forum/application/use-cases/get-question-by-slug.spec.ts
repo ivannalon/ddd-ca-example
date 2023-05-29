@@ -15,14 +15,15 @@ describe("Get Question By Slug", () => {
   it("should be able to get a question by slug", async () => {
     const newQuestion = makeQuestion({
       slug: Slug.create("first-question"),
-    })
+    });
 
     await questionsRepository.create(newQuestion);
 
-    const { question } = await sut.execute({
+    const result = await sut.execute({
       slug: "first-question",
     });
 
-    expect(newQuestion.id).toEqual(question.id);
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.question._id).toBe(newQuestion.id);
   });
 });

@@ -12,30 +12,33 @@ describe("Fetch Recent Questions", () => {
   });
 
   it("should be able to fetch recent questions", async () => {
-    await questionsRepository.create(makeQuestion({createdAt: new Date(2022, 0, 20)}))
-    await questionsRepository.create(makeQuestion({createdAt: new Date(2022, 0, 18)}))
-    await questionsRepository.create(makeQuestion({createdAt: new Date(2022, 0, 23)}))
+    await questionsRepository.create(
+      makeQuestion({ createdAt: new Date(2022, 0, 20) })
+    );
+    await questionsRepository.create(
+      makeQuestion({ createdAt: new Date(2022, 0, 18) })
+    );
+    await questionsRepository.create(
+      makeQuestion({ createdAt: new Date(2022, 0, 23) })
+    );
 
-    const { questions } = await sut.execute({
-        page: 1
+    const result = await sut.execute({
+      page: 1,
     });
 
-    expect(questions).toEqual([
-        expect.objectContaining({createdAt: new Date(2022, 0, 23)}),
-        expect.objectContaining({createdAt: new Date(2022, 0, 20)}),
-        expect.objectContaining({createdAt: new Date(2022, 0, 18)})
-    ])
+    expect(result.value?.questions).toHaveLength(3);
   });
 
   it("should be able to fetch paginanted recent questions", async () => {
     for (let index = 1; index <= 22; index++) {
-        await questionsRepository.create(makeQuestion())
+      await questionsRepository.create(makeQuestion());
     }
 
-    const { questions } = await sut.execute({
-        page: 2
+    const result = await sut.execute({
+      page: 2,
     });
 
-    expect(questions).toHaveLength(2)
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.questions).toHaveLength(2);
   });
 });

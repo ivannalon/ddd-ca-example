@@ -1,5 +1,8 @@
+import { Either, left, right } from "@/core/either";
 import { Answer } from "../../enterprise/entities/answer";
 import { AnswerRepository } from "../repositories/answers-repository";
+import { NotAllowedError } from "./errors/not-allowed-error";
+import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 
 interface EditAnswerUseCaseRequest {
   authorId: string;
@@ -7,33 +10,36 @@ interface EditAnswerUseCaseRequest {
   content: string;
 }
 
-interface EditAnswerUseCaseResponse {
-  answer: Answer;
-}
+type EditAnswerUseCaseResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  {
+    answer: Answer
+  }
+>;
 
 export class EditAnswerUseCase {
   constructor(private answerRepository: AnswerRepository) {}
   async execute({
     authorId,
     answerId,
-    content
+    content,
   }: EditAnswerUseCaseRequest): Promise<EditAnswerUseCaseResponse> {
     const answer = await this.answerRepository.findById(answerId);
 
     if (!answer) {
-      throw new Error("Question not found");
+      return left(new ResourceNotFoundError())
     }
 
     if (authorId !== answer.authorId.toString()) {
-      throw new Error("Not allowed");
+      return left(new NotAllowedError())
     }
 
-    answer.content = content
+    answer.content = content;
 
     await this.answerRepository.update(answer);
 
-    return {
-        answer
-    };
+    return right({
+      answer,
+    });
   }
 }

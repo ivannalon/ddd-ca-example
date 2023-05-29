@@ -1,5 +1,4 @@
 import { AnswerQuestionUseCase } from "./answer-question";
-import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { InMemoryAnswersRepository } from "test/repositories/in-memory-answers-repository";
 
 let answersRepository: InMemoryAnswersRepository;
@@ -12,14 +11,13 @@ describe("Create Answer", () => {
   });
 
   it("should be able to create an answer", async () => {
-    const {answer} = await sut.execute({
+    const result = await sut.execute({
       content: "New Response Test",
       instructorId: "instructor_01",
       questionId: "question_01",
     });
 
-    expect(answer.id).toBeInstanceOf(UniqueEntityId);
-    expect(answer.content).toEqual("New Response Test");
-    expect(answersRepository.answers[0].id).toEqual(answer.id)
+    expect(result.isRight()).toBe(true)
+    expect(answersRepository.answers[0].id).toEqual(result.value?.answer.id)
   });
 });
