@@ -15,8 +15,10 @@ describe("Create Question", () => {
       authorId: "author-01",
       title: "First Question",
       content: "Test first question",
+      attachmentsIds: ["1", "2"],
     });
 
-    expect(result.isRight()).toBe(true)
+    expect(result.isRight()).toBe(true);
+    expect(questionsRepository.questions[0].attachments.currentItems).toHaveLength(2);
   });
 });
