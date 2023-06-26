@@ -1,12 +1,15 @@
+import { InMemoryQuestionAttachmentRepository } from "test/repositories/in-memory-question-attachments-repository";
 import { CreateQuestionUseCase } from "./create-question";
 import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
 
 let questionsRepository: InMemoryQuestionsRepository;
+let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository;
 let sut: CreateQuestionUseCase;
 
 describe("Create Question", () => {
   beforeEach(() => {
-    questionsRepository = new InMemoryQuestionsRepository();
+    inMemoryQuestionAttachmentRepository = new InMemoryQuestionAttachmentRepository()
+    questionsRepository = new InMemoryQuestionsRepository(inMemoryQuestionAttachmentRepository);
     sut = new CreateQuestionUseCase(questionsRepository);
   });
 

@@ -14,9 +14,11 @@ let newQuestion: Question;
 
 describe("Edit Question", () => {
   beforeEach(async () => {
-    questionsRepository = new InMemoryQuestionsRepository();
     inMemoryQuestionAttachmentRepository =
       new InMemoryQuestionAttachmentRepository();
+    questionsRepository = new InMemoryQuestionsRepository(
+      inMemoryQuestionAttachmentRepository
+    );
     sut = new EditQuestionUseCase(
       questionsRepository,
       inMemoryQuestionAttachmentRepository
