@@ -1,13 +1,19 @@
 import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
 import { FetchRecentQuestionsUseCase } from "./fetch-recent-questions";
 import { makeQuestion } from "test/factories/make-question";
+import { InMemoryQuestionAttachmentRepository } from "test/repositories/in-memory-question-attachments-repository";
 
+let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository;
 let questionsRepository: InMemoryQuestionsRepository;
 let sut: FetchRecentQuestionsUseCase;
 
 describe("Fetch Recent Questions", () => {
   beforeEach(() => {
-    questionsRepository = new InMemoryQuestionsRepository();
+    inMemoryQuestionAttachmentRepository =
+      new InMemoryQuestionAttachmentRepository();
+    questionsRepository = new InMemoryQuestionsRepository(
+      inMemoryQuestionAttachmentRepository
+    );
     sut = new FetchRecentQuestionsUseCase(questionsRepository);
   });
 
@@ -38,7 +44,7 @@ describe("Fetch Recent Questions", () => {
       page: 2,
     });
 
-    expect(result.isRight()).toBe(true)
+    expect(result.isRight()).toBe(true);
     expect(result.value?.questions).toHaveLength(2);
   });
 });
